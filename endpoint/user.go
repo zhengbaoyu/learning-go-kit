@@ -3,6 +3,7 @@ package endpoint
 import (
 	"context"
 	"github.com/go-kit/kit/endpoint"
+	"go-kit/service"
 )
 
 type UserRequest struct {
@@ -13,8 +14,10 @@ type UserResponse struct {
 	Name string `json:"name"`
 }
 
-func GenUserEndponit() endpoint.Endpoint {
+func GenUserEndponit(userService service.IUserService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		return UserResponse{Name: ""}, nil
+		r := request.(UserRequest)
+		respName := userService.GetUserName(r.Uid)
+		return UserResponse{Name: respName}, nil
 	}
 }
